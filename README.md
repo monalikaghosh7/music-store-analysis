@@ -58,7 +58,7 @@ The analysis was performed in **MySQL**, and findings were summarized in a Power
 
 ## 📷 Project Preview
 ![Database Schema](schema_diagram.png)
-
+![Database Schema](Music store analysis.pptx)
 ---
 
 ## 📢 Author
