@@ -9,10 +9,10 @@ The analysis was performed in **MySQL**, and findings were summarized in a Power
 ---
 
 ## 🗂 Project Files
-- **`music_store.sql`** — SQL queries used for analysis  
+- **`music store.sql`** — SQL queries used for analysis  
 - **`music_db.txt`** — Raw database text file  
-- **`Music Store Analysis.pptx`** — Final presentation with insights  
-- **`schema_screenshot.png`** — Database schema diagram  
+- **`Music store analysis.pptx`** — Final presentation with insights  
+- **`schema_diagram.png`** — Database schema diagram  
 
 ---
 
@@ -58,7 +58,7 @@ The analysis was performed in **MySQL**, and findings were summarized in a Power
 
 ## 📷 Project Preview
 ![Database Schema](schema_diagram.png)
-![Database Schema](Music store analysis.pptx)
+
 ---
 
 ## 📢 Author
