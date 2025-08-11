@@ -1,0 +1,131 @@
+create database music_db;
+use music_db;
+select * from employee;
+use loans_dataset;
+alter table employee add column age date;
+SET SQL_SAFE_UPDATEs = 0;
+update employee
+set age=str_to_date(birthdate, "%d-%m-%Y %H:%i");
+alter table employee drop birthdate;
+select employee_id, title, timestampdiff(year,age,Current_date()) as year
+from employee
+order by year desc;
+select * from invoice;
+select count(invoice_date) as invoice_no, billing_country
+from invoice
+group by billing_country
+order by invoice_no desc;
+
+select invoice_id, total
+from invoice
+order by total desc
+Limit 3;
+
+select round(sum(total),2) as highinvoice, billing_city
+from invoice
+group by billing_city
+order by highinvoice desc;
+
+select * from customer;
+select a.customer_id,round(sum(b.total),2) as total,concat(a.first_name," ",a.last_name) as full_name
+from customer as a inner join invoice as b on a.customer_id=b.customer_id
+group by a.customer_id,a.first_name,a.last_name 
+order by total desc;
+
+select distinct a.email, a.first_name, a.last_name,g.name
+from customer as a join invoice as b on a.customer_id=b.customer_id
+ join invoice_line as c on b.invoice_id=c.invoice_id
+ join track as t on c.track_id=t.track_id
+ join genre as g on t.genre_id = g.genre_id
+where g.name= "Rock";
+
+select a.name,  g.name, count(t.track_id) as cnt
+from artist as a join album2 as b on a.artist_id= b.artist_id
+join track as t on b.album_id=t.album_id
+join genre as g on t.genre_id=g.genre_id
+where g.name="Rock"
+group by a.name, g.name
+order by cnt desc
+limit 10;
+select * from track;
+
+select name
+from track
+where milliseconds > (select avg(milliseconds)
+from track);
+select * from invoice_line;
+
+select round(sum(l.unit_price * l.quantity),2) as cost,ar.name,c.customer_id
+from invoice_line as l join track as t on l.track_id= t.track_id
+join album2 as a on t.album_id=a.album_id
+join artist as ar on a.artist_id= ar.artist_id
+join invoice as v on l.invoice_id= v.invoice_id
+join customer as c on v.customer_id=c.customer_id
+group by ar.name, c.customer_id;
+
+
+with cte as(select count(*) as purchase_count, g.name as genre_name,c.country
+from invoice as i join customer as c on i.customer_id=c.customer_id
+join invoice_line as l on i.invoice_id=l.invoice_id
+join track as t on l.track_id=t.track_id
+join genre as g on t.genre_id=g.genre_id
+group by g.name,c.country),
+ranked_genre as( select purchase_count, genre_name,country,
+row_number() over(partition by country order by purchase_count desc) as rnk
+from cte)
+select purchase_count,genre_name,country,rnk
+from ranked_genre
+where rnk=1
+order by purchase_count desc;
+
+with customer_spending as (select c.customer_id,c.country,round(sum(a.total),2) as total, concat(c.first_name," ",c.last_name) as customer_name
+from customer as c join  invoice as a on a.customer_id=c.customer_id
+group by c.customer_id,c.country, c.first_name, c.last_name
+order by total desc),
+customer_rank as(select customer_name, total,customer_id,country,
+row_number() over(partition by country order by total desc) as rnk
+from customer_spending)
+select customer_name, total, customer_id, country
+from customer_rank
+where rnk=1
+order by total desc;
+
+SELECT c.customer_id,
+       concat(c.first_name," ",c.last_name) as customer_name,
+       COUNT(i.invoice_id) AS total_purchases
+FROM customer c
+JOIN invoice i ON c.customer_id = i.customer_id
+GROUP BY c.customer_id,customer_name
+ORDER BY total_purchases DESC
+LIMIT 10;
+
+SELECT g.name AS genre,
+       round(sum(il.unit_price * il.quantity),2) AS total_revenue
+FROM invoice_line il
+JOIN track t ON il.track_id = t.track_id
+JOIN genre g ON t.genre_id = g.genre_id
+GROUP BY g.name
+ORDER BY total_revenue DESC;
+
+SELECT DATE(invoice_date) AS day,
+       SUM(total) AS daily_revenue
+FROM invoice
+GROUP BY day
+ORDER BY daily_revenue DESC
+LIMIT 5;
+
+SELECT a.name AS artist_name,
+      round(SUM(il.unit_price * il.quantity),2) AS revenue_generated
+FROM invoice_line il
+JOIN track t ON il.track_id = t.track_id
+JOIN album2 al ON t.album_id = al.album_id
+JOIN artist a ON al.artist_id = a.artist_id
+GROUP BY artist_name
+ORDER BY revenue_generated DESC
+LIMIT 10;
+
+SELECT billing_country,
+      round( SUM(total),2) AS country_revenue
+FROM invoice
+GROUP BY billing_country
+ORDER BY country_revenue DESC;
