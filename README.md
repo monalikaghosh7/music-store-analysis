@@ -51,13 +51,13 @@ The analysis was performed in **MySQL**, and findings were summarized in a Power
 ## 📌 How to Use
 1. Import `music_db.txt` into MySQL.  
 2. Run queries from `music_store.sql` to replicate analysis.  
-3. Refer to `schema_screenshot.png` for database structure.  
-4. Review insights in `Music Store Analysis.pptx`.  
+3. Refer to `schema_diagram.png` for database structure.  
+4. Review insights in `Music store analysis.pptx`.  
 
 ---
 
 ## 📷 Project Preview
-![Database Schema](schema_screenshot.png)
+![Database Schema](schema_diagram.png)
 
 ---
 
